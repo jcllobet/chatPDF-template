@@ -4,7 +4,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { FiUpload, FiCheckCircle } from "react-icons/fi";
 
 // import { Button } from "@/components/button";
-import usePdfUpload from "@/hooks/usePdfUpload";
+import usePdfUpload from "@/app/hooks/usePdf";
 
 export default function DocumentSidebar({
   onClickRedirect,

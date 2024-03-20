@@ -8,18 +8,38 @@ import {
 } from "react-icons/fi";
 import Image from "next/image";
 import { Button } from "@/components/button";
-import usePdfUpload from "@/hooks/usePdfUpload";
+import usePdfUpload from "@/app/hooks/usePdf";
+import { redirect } from "next/navigation";
+import { useUnifiedChatContext } from "@/app/context/chatProvider";
 
-export default function DocumentUpload({
-  onClickRedirect,
-}: {
+export default function DocumentUpload({}: {
   onClickRedirect: (chatId: string) => void;
 }) {
   const methods = useFormContext();
   const { control } = methods;
+  const { updateChat } = useUnifiedChatContext();
 
-  const { uploadStatus, pdfs, handlePdfUpload, handleRemovePdf } =
-    usePdfUpload(onClickRedirect);
+  const onClickRedirect = (chatId: string) => {
+    console.log(`DocumentUpload: chatId=${chatId}`); // This line is added to the original code
+    redirect(`/chat/${chatId}`);
+  };
+
+  const {
+    uploadStatus,
+    pdfs,
+    handlePdfUpload: originalHandlePdfUpload,
+    handleRemovePdf,
+  } = usePdfUpload(onClickRedirect);
+
+  const handlePdfUpload = async (file: File) => {
+    const result = await originalHandlePdfUpload(file);
+    if (result) {
+      const { chatId, chat, pdf } = result;
+      updateChat(chatId, chat, pdf);
+      return result; // Ensure you return a value here if the function's declared type requires it.
+    }
+    return null; // Return null or an appropriate value if the condition is not met.
+  };
 
   return (
     <div className="flex flex-col items-center justify-center">

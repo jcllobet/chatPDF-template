@@ -1,48 +1,71 @@
 "use client";
 import React, { createContext, useContext, useState, useCallback } from "react";
-import {
-  type Chat,
-  type Pdf,
-  type ChatWithPdf,
-  type UnifiedChatContextType,
-} from "@/app/interfaces/chatPdf";
+import { type Chat, type ChatContextType } from "@/app/interfaces/chat";
 
-const UnifiedChatContext = createContext<UnifiedChatContextType | undefined>(
-  undefined,
-);
+const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-export const useUnifiedChatContext = () => {
-  const context = useContext(UnifiedChatContext);
+export const useChatContext = () => {
+  const context = useContext(ChatContext);
   if (!context) {
-    throw new Error(
-      "useUnifiedChatContext must be used within a UnifiedChatProvider",
-    );
+    throw new Error("useChatContext must be used within a ChatProvider");
   }
   return context;
 };
 
-export const UnifiedChatProvider: React.FC<{ children: React.ReactNode }> = ({
+export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [chats, setChats] = useState<Record<number, ChatWithPdf>>({});
+  const [chats, setChats] = useState<Record<number, Chat>>({});
 
-  const updateChat = useCallback((chatId: number, chat: Chat, pdf?: Pdf) => {
+  const updateChat = useCallback((chatId: number, chat: Chat) => {
     setChats((prevChats) => ({
       ...prevChats,
-      [chatId]: { ...chat, pdf },
+      [chatId]: chat,
     }));
   }, []);
 
   const getChat = useCallback(
-    (chatId: number): ChatWithPdf | undefined => {
+    (chatId: number): Chat | undefined => {
       return chats[chatId];
     },
-    [chats],
+    [chats]
+  );
+
+  const addPdf = useCallback(
+    (pdfId: string, pdfName: string) => {
+      // Assuming the PDF URL is generated based on the PDF ID and name, this logic might need to be adjusted.
+      const pdfUrl = `https://example.com/pdf/${pdfId}`;
+      Object.values(chats).forEach((chat) => {
+        if (chat.pdfId === pdfId) {
+          updateChat(chat.id, { ...chat, pdfUrl, pdfName });
+        }
+      });
+    },
+    [chats, updateChat]
+  );
+
+  const getPdf = useCallback(
+    (chatId: number) => {
+      const chat = chats[chatId];
+      return chat ? chat.pdfUrl : "";
+    },
+    [chats]
+  );
+
+  const deletePdfAndChat = useCallback(
+    (chatId: number) => {
+      const updatedChats = { ...chats };
+      delete updatedChats[chatId];
+      setChats(updatedChats);
+    },
+    [chats]
   );
 
   return (
-    <UnifiedChatContext.Provider value={{ chats, updateChat, getChat }}>
+    <ChatContext.Provider
+      value={{ chats, updateChat, getChat, addPdf, getPdf, deletePdfAndChat }}
+    >
       {children}
-    </UnifiedChatContext.Provider>
+    </ChatContext.Provider>
   );
 };

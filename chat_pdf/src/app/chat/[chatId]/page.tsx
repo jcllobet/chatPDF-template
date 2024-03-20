@@ -1,32 +1,39 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ChatComponent from "@/components/chatComponent";
-import DocumentUploadSidebar from "@/components/documentSidebar";
-import PDFViewer from "@/components/pdfViewer";
-import { useRouter } from "next/router";
+import ChatComponent from "@/app/chat/[chatId]/chatComponent";
+import DocumentUploadSidebar from "@/app/chat/[chatId]/documentSidebar";
+import PDFViewer from "@/app/chat/[chatId]/pdfViewer";
 import { useUnifiedChatContext } from "@/context/chatProvider";
-import { type ChatWithPdf } from "@/interfaces/chatPdf"; // Assuming this interface is correctly defined elsewhere
+import { redirect } from "next/navigation";
+import { type ChatWithPdf } from "@/app/interfaces/chat"; // Assuming this interface is correctly defined elsewhere
 
 export default function ChatPage() {
-  const router = useRouter();
-  const { chatId } = router.query;
   const { getChat } = useUnifiedChatContext();
-
   const [currentChat, setCurrentChat] = useState<ChatWithPdf | undefined>();
-
-  const handleChatRedirect = (chatId: string) => {
-    router.push(`/chat/${chatId}`);
-  };
+  const [isLoading, setIsLoading] = useState(true); // Initialize loading state
+  const [chatId, setChatId] = useState<string | null>(null);
 
   useEffect(() => {
     if (chatId) {
-      const chat = getChat(parseInt(chatId as string));
-      setCurrentChat(chat);
+      const chatDetails = getChat(parseInt(chatId));
+      setCurrentChat(chatDetails);
+      setIsLoading(false); // Assuming you set loading to false after fetching
     }
   }, [chatId, getChat]);
 
-  // Assuming pdfs is meant to be derived from currentChat.pdf
+  // get all the chats from context
+
+  console.log("ChatPage: chatId=", chatId);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Display a loading screen or component
+  }
+
+  const handleChatRedirect = (chatId: string) => {
+    redirect(`/chat/${chatId}`);
+  };
+
   const pdfs = currentChat?.pdf ? [currentChat.pdf] : [];
 
   return (

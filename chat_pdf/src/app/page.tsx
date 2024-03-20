@@ -1,18 +1,12 @@
-"use client";
 import { Footer } from "@/app/components/footer";
 import { Logo } from "@/app/components/logo";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import DocumentUploadMain from "@/app/components/mainUploadpdf";
-import { useRouter } from "next/navigation";
+import DocumentUploadMain from "@/app/components/documentUploadMain";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  const router = useRouter();
+export default async function Home() {
   const methods = useForm();
-
-  const handleChatRedirect = (chatId: string) => {
-    router.push(`/chat/${chatId}`);
-  };
 
   return (
     <FormProvider {...methods}>
@@ -22,9 +16,7 @@ export default function Home() {
       >
         <div className="relative flex flex-col gap-8 px-4 -mt-24">
           <Logo></Logo>
-          <DocumentUploadMain
-            onClickRedirect={handleChatRedirect}
-          ></DocumentUploadMain>
+          <DocumentUploadMain />
           {/* <Search></Search> */}
           <Footer></Footer>
         </div>
