@@ -1,9 +1,9 @@
-import { PresetQuery } from "@/app/components/preset-query";
-import { Skeleton } from "@/app/components/skeleton";
-import { Wrapper } from "@/app/components/wrapper";
-import { Relate } from "@/app/interfaces/relate";
-import { MessageSquareQuote } from "lucide-react";
-import React, { FC } from "react";
+import { PresetQuery } from '@/app/components/preset-query'
+import { Skeleton } from '@/app/components/skeleton'
+import { Wrapper } from '@/app/components/wrapper'
+import { type Relate } from '@/app/interfaces/relate'
+import { MessageSquareQuote } from 'lucide-react'
+import React, { type FC } from 'react'
 
 export const Relates: FC<{ relates: Relate[] | null }> = ({ relates }) => {
   return (
@@ -17,9 +17,11 @@ export const Relates: FC<{ relates: Relate[] | null }> = ({ relates }) => {
         <div className="flex gap-2 flex-col">
           {relates !== null ? (
             relates.length > 0 ? (
-              relates.map(( question ) => { 
-                //@ts-ignore
-                return <PresetQuery key={question} query={question}></PresetQuery>
+              relates.map((question) => {
+                // @ts-expect-error
+                return (
+                  <PresetQuery key={question} query={question}></PresetQuery>
+                )
               })
             ) : (
               <div className="text-sm">No related questions.</div>
@@ -34,5 +36,5 @@ export const Relates: FC<{ relates: Relate[] | null }> = ({ relates }) => {
         </div>
       }
     ></Wrapper>
-  );
-};
+  )
+}

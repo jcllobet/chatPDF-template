@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 
 export function Logo({
@@ -7,7 +8,6 @@ export function Logo({
 }) {
   return (
     <div className="flex gap-4 items-center justify-center cursor-default select-none relative font-mono font-thin text-indigo-400 hover:text-indigo-600">
-
       <Link href={link}>
         <div className="flex items-center justify-center">
           <div>

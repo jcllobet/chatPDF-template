@@ -1,4 +1,5 @@
-import { FC, ReactNode } from "react";
+import React from "react";
+import { type FC, type ReactNode } from "react";
 
 export const Wrapper: FC<{
   title: ReactNode;

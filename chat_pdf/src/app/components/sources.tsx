@@ -1,15 +1,16 @@
+import React from "react";
 import { Skeleton } from "@/app/components/skeleton";
 import { Wrapper } from "@/app/components/wrapper";
-import { Source } from "@/app/interfaces/source";
+import { type Source } from "@/app/interfaces/source";
 import { BookText } from "lucide-react";
-import { FC } from "react";
+import { type FC } from "react";
 
 const SourceItem: FC<{ source: Source; index: number }> = ({
   source,
   index,
 }) => {
   const { title, link } = source;
-  if (link === null || link === "" || link === undefined){
+  if (link === null || link === "" || link === undefined) {
     return null;
   }
 
@@ -18,7 +19,12 @@ const SourceItem: FC<{ source: Source; index: number }> = ({
       className="relative text-xs py-3 px-3 bg-zinc-400 hover:bg-zinc-300 rounded-lg flex flex-col gap-2"
       key={title}
     >
-      <a href={link} target="_blank" className="absolute inset-0"></a>
+      <a
+        href={link}
+        target="_blank"
+        className="absolute inset-0"
+        rel="noreferrer"
+      ></a>
       <div className="font-medium text-zinc-950 text-ellipsis overflow-hidden whitespace-nowrap break-words">
         {title}
       </div>
@@ -41,7 +47,8 @@ const SourceItem: FC<{ source: Source; index: number }> = ({
 };
 
 export const Sources: FC<{ sources: string | null }> = ({ sources }) => {
-  let parsedSources:Source[]   = typeof sources === 'string' ? JSON.parse(sources) : sources;
+  const parsedSources: Source[] =
+    typeof sources === "string" ? JSON.parse(sources) : sources;
   return (
     <Wrapper
       title={

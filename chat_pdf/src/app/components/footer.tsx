@@ -1,5 +1,6 @@
+import React from "react";
 import { Mails } from "lucide-react";
-import { FC } from "react";
+import { type FC } from "react";
 
 export const Footer: FC = () => {
   return (
@@ -36,10 +37,13 @@ export const Footer: FC = () => {
         <a className="hover:text-zinc-200" href="https://huggingface.co/SciPhi">
           HF
         </a>
-        <a className="hover:text-zinc-200" href="https://owencolegrove.substack.com/">
+        <a
+          className="hover:text-zinc-200"
+          href="https://owencolegrove.substack.com/"
+        >
           Blog
         </a>
-        <a className="hover:text-zinc-200"  href="https://search.lepton.run/">
+        <a className="hover:text-zinc-200" href="https://search.lepton.run/">
           Lepton Search
         </a>
       </div>

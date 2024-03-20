@@ -1,28 +1,32 @@
-import React from "react";
+import React, { type FC } from 'react'
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/app/components/popover";
-import { Skeleton } from "@/app/components/skeleton";
-import { Wrapper } from "@/app/components/wrapper";
-import { Source } from "@/app/interfaces/source";
-import { BookOpenText } from "lucide-react";
-import { FC } from "react";
-import Markdown from "react-markdown";
+  PopoverTrigger
+} from '@/app/components/popover'
+import { Skeleton } from '@/app/components/skeleton'
+import { Wrapper } from '@/app/components/wrapper'
+import { type Source } from '@/app/interfaces/source'
+import { BookOpenText } from 'lucide-react'
+import Markdown from 'react-markdown'
 
-function formatMarkdownNewLines(markdown: string) {
-  return markdown.split('\\n').join('  \n').replace(/\[(\d+)]/g, '[$1]($1)').split(`"queries":`)[0].replace(/\\u[\dA-F]{4}/gi, (match: any) => {
-    return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
-  });
+function formatMarkdownNewLines (markdown: string) {
+  return markdown
+    .split('\\n')
+    .join('  \n')
+    .replace(/\[(\d+)]/g, '[$1]($1)')
+    .split('"queries":')[0]
+    .replace(/\\u[\dA-F]{4}/gi, (match: any) => {
+      return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16))
+    })
 }
 
-
-export const Answer: FC<{ markdown: string; sources: string | null }> = ({
+export const Answer: FC<{ markdown: string, sources: string | null }> = ({
   markdown,
-  sources,
+  sources
 }) => {
-  let parsedSources:Source[]  = typeof sources === 'string' ? JSON.parse(sources) : sources;
+  const parsedSources: Source[] =
+    typeof sources === 'string' ? JSON.parse(sources) : sources
 
   return (
     <Wrapper
@@ -32,14 +36,15 @@ export const Answer: FC<{ markdown: string; sources: string | null }> = ({
         </>
       }
       content={
-        markdown ? (
+        markdown
+          ? (
           <div className="prose prose-sm max-w-full text-zinc-300">
             <Markdown
               components={{
                 a: ({ node: _, ...props }) => {
-                  if (!props.href) return <></>;
-                  const source = parsedSources[+props.href - 1];
-                  if (!source) return <></>;
+                  if (!props.href) return <></>
+                  const source = parsedSources[+props.href - 1]
+                  if (!source) return <></>
                   return (
                     <span className="inline-block w-4">
                       <Popover>
@@ -52,7 +57,7 @@ export const Answer: FC<{ markdown: string; sources: string | null }> = ({
                           </span>
                         </PopoverTrigger>
                         <PopoverContent
-                          align={"start"}
+                          align={'start'}
                           className="max-w-screen-md flex flex-col gap-2 bg-zinc-800 shadow-transparent ring-zinc-600 border-zinc-600 ring-4 text-xs"
                         >
                           <div className="text-zinc-200 text-ellipsis overflow-hidden whitespace-nowrap font-medium">
@@ -82,7 +87,7 @@ export const Answer: FC<{ markdown: string; sources: string | null }> = ({
                                 <a
                                   title={source.title}
                                   href={source.link}
-                                  target="_blank"
+                                  target="_blank" rel="noreferrer"
                                 >
                                   {source.link}
                                 </a>
@@ -99,15 +104,15 @@ export const Answer: FC<{ markdown: string; sources: string | null }> = ({
                         </PopoverContent>
                       </Popover>
                     </span>
-                  );
-                },
+                  )
+                }
               }}
             >
               {formatMarkdownNewLines(markdown)}
-
             </Markdown>
           </div>
-        ) : (
+            )
+          : (
           <div className="flex flex-col gap-2">
             <Skeleton className="max-w-sm h-4 bg-zinc-200"></Skeleton>
             <Skeleton className="max-w-lg h-4 bg-zinc-200"></Skeleton>
@@ -115,8 +120,8 @@ export const Answer: FC<{ markdown: string; sources: string | null }> = ({
             <Skeleton className="max-w-lg h-4 bg-zinc-200"></Skeleton>
             <Skeleton className="max-w-xl h-4 bg-zinc-200"></Skeleton>
           </div>
-        )
+            )
       }
     ></Wrapper>
-  );
-};
+  )
+}
