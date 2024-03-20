@@ -1,3 +1,5 @@
+"use client";
+
 import { Footer } from "@/app/components/footer";
 import { Logo } from "@/app/components/logo";
 import React from "react";

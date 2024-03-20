@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
   FiUpload,
@@ -8,37 +10,51 @@ import {
 } from "react-icons/fi";
 import Image from "next/image";
 import { Button } from "@/components/button";
-import usePdfUpload from "@/app/hooks/usePdf";
 import { redirect } from "next/navigation";
-import { useUnifiedChatContext } from "@/app/context/chatProvider";
+import { useChatContext } from "@/app/context/chatProvider";
+import { Chat } from "@/app/interfaces/chat";
 
-export default function DocumentUpload({}: {
-  onClickRedirect: (chatId: string) => void;
-}) {
+export default function DocumentUpload() {
   const methods = useFormContext();
   const { control } = methods;
-  const { updateChat } = useUnifiedChatContext();
+  const { chats, updateChat, addPdf, deletePdfAndChat } = useChatContext();
+  const [uploadStatus, setUploadStatus] = useState<"idle" | "success">("idle");
+  const [pdfs, setPdfs] = useState<Array<{ id: string; name: string }>>([]);
 
-  const onClickRedirect = (chatId: string) => {
-    console.log(`DocumentUpload: chatId=${chatId}`); // This line is added to the original code
+  const onClickRedirect = (chatId: number) => {
     redirect(`/chat/${chatId}`);
   };
 
-  const {
-    uploadStatus,
-    pdfs,
-    handlePdfUpload: originalHandlePdfUpload,
-    handleRemovePdf,
-  } = usePdfUpload(onClickRedirect);
-
   const handlePdfUpload = async (file: File) => {
-    const result = await originalHandlePdfUpload(file);
-    if (result) {
-      const { chatId, chat, pdf } = result;
-      updateChat(chatId, chat, pdf);
-      return result; // Ensure you return a value here if the function's declared type requires it.
+    // Simulating PDF upload
+    const randomId = Math.random().toString(36).substring(7);
+    const pdfId = randomId;
+    const chatId = Number(randomId);
+    const pdfName = file.name;
+
+    setPdfs((prevPdfs) => [...prevPdfs, { id: pdfId, name: pdfName }]);
+    setUploadStatus("success");
+
+    const newChat: Chat = {
+      id: chatId,
+      name: pdfName,
+      messages: [],
+      pdfId,
+      pdfUrl: "",
+      pdfName,
+    };
+    updateChat(chatId, newChat);
+    addPdf(pdfId, pdfName);
+  };
+
+  const handleRemovePdf = (pdfId: string) => {
+    setPdfs((prevPdfs) => prevPdfs.filter((pdf) => pdf.id !== pdfId));
+    const chatToDelete = Object.values(chats).find(
+      (chat) => chat.pdfId === pdfId,
+    );
+    if (chatToDelete) {
+      deletePdfAndChat(chatToDelete.id);
     }
-    return null; // Return null or an appropriate value if the condition is not met.
   };
 
   return (
@@ -98,7 +114,10 @@ export default function DocumentUpload({}: {
               variant="filled"
               className="flex items-center gap-2 p-2 rounded"
               onClick={() => {
-                onClickRedirect(pdf.chatId);
+                const chatId = Object.values(chats).find(
+                  (chat) => chat.pdfId === pdf.id,
+                )?.id;
+                if (chatId) onClickRedirect(chatId);
               }}
             >
               <FiMessageCircle />

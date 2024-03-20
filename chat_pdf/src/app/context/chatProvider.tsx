@@ -28,7 +28,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     (chatId: number): Chat | undefined => {
       return chats[chatId];
     },
-    [chats]
+    [chats],
   );
 
   const addPdf = useCallback(
@@ -41,7 +41,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       });
     },
-    [chats, updateChat]
+    [chats, updateChat],
   );
 
   const getPdf = useCallback(
@@ -49,7 +49,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       const chat = chats[chatId];
       return chat ? chat.pdfUrl : "";
     },
-    [chats]
+    [chats],
   );
 
   const deletePdfAndChat = useCallback(
@@ -58,7 +58,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       delete updatedChats[chatId];
       setChats(updatedChats);
     },
-    [chats]
+    [chats],
   );
 
   return (
