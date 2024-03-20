@@ -42,7 +42,7 @@ export function Button({
     "rounded-md inline-flex gap-0.5 justify-center overflow-hidden font-medium transition",
     variantStyles[variant],
     sizeStyles[size], // Apply size styles
-    className
+    className,
   );
 
   // Render a link with a button inside if href is provided

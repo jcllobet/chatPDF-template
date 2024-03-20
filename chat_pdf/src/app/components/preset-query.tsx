@@ -1,10 +1,10 @@
-import { getSearchUrl } from '@/app/utils/get-search-url'
-import { nanoid } from 'nanoid'
-import Link from 'next/link'
-import React, { type FC, useMemo } from 'react'
+import { getSearchUrl } from "@/app/utils/get-search-url";
+import { nanoid } from "nanoid";
+import Link from "next/link";
+import React, { type FC, useMemo } from "react";
 
 export const PresetQuery: FC<{ query: string }> = ({ query }) => {
-  const rid = useMemo(() => nanoid(), [query])
+  const rid = useMemo(() => nanoid(), [query]);
 
   return (
     <Link
@@ -15,5 +15,5 @@ export const PresetQuery: FC<{ query: string }> = ({ query }) => {
     >
       {query}
     </Link>
-  )
-}
+  );
+};

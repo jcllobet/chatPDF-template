@@ -1,20 +1,20 @@
-'use client'
-import { getSearchUrl } from '@/app/utils/get-search-url'
-import { ArrowRight } from 'lucide-react'
-import { nanoid } from 'nanoid'
-import { useRouter } from 'next/navigation'
-import React, { type FC, useState } from 'react'
+"use client";
+import { getSearchUrl } from "@/app/utils/get-search-url";
+import { ArrowRight } from "lucide-react";
+import { nanoid } from "nanoid";
+import { useRouter } from "next/navigation";
+import React, { type FC, useState } from "react";
 
 export const Search: FC = () => {
-  const [value, setValue] = useState('')
-  const router = useRouter()
+  const [value, setValue] = useState("");
+  const router = useRouter();
   return (
     <form
       onSubmit={(e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (value) {
-          setValue('')
-          router.push(getSearchUrl(encodeURIComponent(value), nanoid()))
+          setValue("");
+          router.push(getSearchUrl(encodeURIComponent(value), nanoid()));
         }
       }}
     >
@@ -25,7 +25,9 @@ export const Search: FC = () => {
         <input
           id="search-bar"
           value={value}
-          onChange={(e) => { setValue(e.target.value) }}
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
           autoFocus
           placeholder="Ask SciPhi AI anything ..."
           className="px-2 pr-6 w-full rounded-md flex-1 outline-none bg-zinc-800 text-zinc-200"
@@ -38,5 +40,5 @@ export const Search: FC = () => {
         </button>
       </label>
     </form>
-  )
-}
+  );
+};

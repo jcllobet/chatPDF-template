@@ -1,29 +1,25 @@
-import React, { useState } from 'react'
-import Image from 'next/image'
-import { Controller, useFormContext } from 'react-hook-form'
-import {
-  FiUpload,
-  FiCheckCircle,
-  FiTrash2,
-  FiMessageCircle
-} from 'react-icons/fi'
+import React, { useState } from "react";
+import Image from "next/image";
+import { Controller, useFormContext } from "react-hook-form";
+import { FiUpload, FiCheckCircle } from "react-icons/fi";
 
-import { Button } from '@/components/button'
-import usePdfUpload from '@/hooks/usePdfUpload'
+// import { Button } from "@/components/button";
+import usePdfUpload from "@/hooks/usePdfUpload";
 
-export default function DocumentSidebar ({
+export default function DocumentSidebar({
   onClickRedirect,
-  chatId
+  chatId,
 }: {
-  onClickRedirect: (chatId: string) => void
-  chatId: string
+  onClickRedirect: (chatId: string) => void;
+  chatId: string;
 }) {
-  const methods = useFormContext()
-  const { control } = methods
-  const [selectedPdfId, setSelectedPdfId] = useState<string | null>(null)
+  console.log(`SidebarComponent: chatId=${chatId}`); // This line is added to the original code
+  const methods = useFormContext();
+  const { control } = methods;
+  const [selectedPdfId, setSelectedPdfId] = useState<string | null>(null);
 
   const { uploadStatus, pdfs, handlePdfUpload, handleRemovePdf } =
-    usePdfUpload(onClickRedirect)
+    usePdfUpload(onClickRedirect);
 
   return (
     <div className="w-full h-full overflow-auto p-6 text-gray-200 bg-gray-800 shadow-lg">
@@ -31,33 +27,32 @@ export default function DocumentSidebar ({
         <Controller
           name="pdfs"
           control={control}
-          render={({ field: { value } }) => (
+          render={({ field }) => (
             <label
               htmlFor="pdf-upload"
               className="flex items-center justify-center gap-4 border-2 border-dashed bg-zinc-800 border-indigo-300 rounded-lg cursor-pointer hover:border-indigo-500 w-full px-4 py-6"
             >
-              {uploadStatus === 'idle'
-                ? (
+              {uploadStatus === "idle" ? (
                 <div className="flex items-center text-zinc-300">
                   <FiUpload />
                   <span className="pl-3">Click to upload PDF</span>
                 </div>
-                  )
-                : (
+              ) : (
                 <div className="flex items-center text-green-500">
                   <FiCheckCircle />
                   <span className="pl-3">Upload Successful!</span>
                 </div>
-                  )}
+              )}
               <input
                 accept="application/pdf"
                 className="hidden"
                 id="pdf-upload"
                 type="file"
                 onChange={(e) => {
-                  const file = e.target.files && e.target.files[0]
-                  if (file) handlePdfUpload(file)
+                  const file = e.target.files && e.target.files[0];
+                  if (file) handlePdfUpload(file);
                 }}
+                value={field.value}
               />
             </label>
           )}
@@ -67,11 +62,11 @@ export default function DocumentSidebar ({
             <li
               key={pdf.id}
               className={`flex items-center justify-between p-2 rounded-md ${
-                selectedPdfId === pdf.id ? 'bg-blue-600' : 'bg-gray-700'
+                selectedPdfId === pdf.id ? "bg-blue-600" : "bg-gray-700"
               }`}
               onClick={() => {
-                setSelectedPdfId(pdf.id) // Set the selectedPdfId to the current pdf.id
-                onClickRedirect(pdf.chatId)
+                setSelectedPdfId(pdf.id); // Set the selectedPdfId to the current pdf.id
+                onClickRedirect(pdf.chatId);
               }}
             >
               <div className="flex items-center">
@@ -80,8 +75,8 @@ export default function DocumentSidebar ({
               </div>
               <button
                 onClick={(e) => {
-                  e.stopPropagation() // Prevent triggering the li's onClick
-                  handleRemovePdf(pdf.id)
+                  e.stopPropagation(); // Prevent triggering the li's onClick
+                  handleRemovePdf(pdf.id);
                 }}
                 className="ml-4 p-1 text-red-500 hover:text-red-300 rounded"
               >
@@ -105,5 +100,5 @@ export default function DocumentSidebar ({
         </ul>
       </div>
     </div>
-  )
+  );
 }

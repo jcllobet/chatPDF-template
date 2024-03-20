@@ -1,27 +1,27 @@
-import React from 'react'
-import { Input } from '@/components/input'
-import { Button } from '@/components/button'
-import { Send } from 'lucide-react'
-import MessageList from '@/components/messageList'
+import React from "react";
+import { Input } from "@/components/input";
+import { Button } from "@/components/button";
+import { Send } from "lucide-react";
+import MessageList from "@/components/messageList";
 
 interface Props {
-  chatId: number
-  pdfUrl: string
+  chatId: number;
+  pdfUrl: string;
 }
 
 const ChatComponent = ({ chatId, pdfUrl }: Props) => {
-  const [isQuestionnaireCompleted, setIsQuestionnaireCompleted] =
-    React.useState(true)
-  const [input, setInput] = React.useState('')
+  console.log(`ChatComponent: chatId=${chatId}, pdfUrl=${pdfUrl}`);
+
+  const [input, setInput] = React.useState("");
 
   const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
+    event.preventDefault();
     // Handle submit logic here
-  }
+  };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value)
-  }
+    setInput(event.target.value);
+  };
   // Render chatbot UI
   return (
     <div className="flex flex-col h-screen">
@@ -53,7 +53,7 @@ const ChatComponent = ({ chatId, pdfUrl }: Props) => {
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default ChatComponent
+export default ChatComponent;
