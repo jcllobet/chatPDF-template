@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
   FiUpload,
@@ -11,50 +11,16 @@ import {
 import Image from "next/image";
 import { Button } from "@/components/button";
 import { redirect } from "next/navigation";
-import { useChatContext } from "@/app/context/chatProvider";
-import { Chat } from "@/app/interfaces/chat";
+import { useChatContext } from "@/app/context/chatProvider"; // Import useChatContext
+import useChat from "@/app/hooks/useChat"; // Import useChat
 
 export default function DocumentUpload() {
-  const methods = useFormContext();
-  const { control } = methods;
-  const { chats, updateChat, addPdf, deletePdfAndChat } = useChatContext();
-  const [uploadStatus, setUploadStatus] = useState<"idle" | "success">("idle");
-  const [pdfs, setPdfs] = useState<Array<{ id: string; name: string }>>([]);
+  const { control } = useFormContext();
+  const { uploadStatus, handlePdfUpload, handleRemovePdf } = useChat(); // Use useChat hook
+  const { chats, deletePdfAndChat } = useChatContext(); // Use useChatContext to fetch chats
 
-  const onClickRedirect = (chatId: number) => {
+  const onClickRedirect = (chatId: string) => {
     redirect(`/chat/${chatId}`);
-  };
-
-  const handlePdfUpload = async (file: File) => {
-    // Simulating PDF upload
-    const randomId = Math.random().toString(36).substring(7);
-    const pdfId = randomId;
-    const chatId = Number(randomId);
-    const pdfName = file.name;
-
-    setPdfs((prevPdfs) => [...prevPdfs, { id: pdfId, name: pdfName }]);
-    setUploadStatus("success");
-
-    const newChat: Chat = {
-      id: chatId,
-      name: pdfName,
-      messages: [],
-      pdfId,
-      pdfUrl: "",
-      pdfName,
-    };
-    updateChat(chatId, newChat);
-    addPdf(pdfId, pdfName);
-  };
-
-  const handleRemovePdf = (pdfId: string) => {
-    setPdfs((prevPdfs) => prevPdfs.filter((pdf) => pdf.id !== pdfId));
-    const chatToDelete = Object.values(chats).find(
-      (chat) => chat.pdfId === pdfId,
-    );
-    if (chatToDelete) {
-      deletePdfAndChat(chatToDelete.id);
-    }
   };
 
   return (
@@ -62,7 +28,7 @@ export default function DocumentUpload() {
       <Controller
         name="pdfs"
         control={control}
-        render={({ field }) => (
+        render={({ field: value }) => (
           <label
             htmlFor="pdf-upload"
             className="flex items-center justify-center gap-4 border-2 border-dashed bg-zinc-800 border-indigo-300 rounded-lg cursor-pointer hover:border-indigo-500 w-full px-4 py-6"
@@ -85,25 +51,23 @@ export default function DocumentUpload() {
               type="file"
               onChange={(e) => {
                 const file = e.target.files && e.target.files[0];
+                console.log("File selected:", file);
                 if (file) handlePdfUpload(file);
               }}
-              value={field.value}
             />
           </label>
         )}
       />
-      {pdfs.map((pdf) => (
+      {Object.values(chats).map((chat) => (
         <div
-          key={pdf.id}
+          key={chat.id}
           className="flex items-center gap-12 justify-between w-full p-4 border rounded-lg mt-4"
         >
           <div className="flex items-center">
             <Image src="/pdf-icon.png" alt="PDF" width={24} height={24} />
-            <span className="flex-1 ml-4 text-zinc-300">{pdf.name}</span>
+            <span className="flex-1 ml-4 text-zinc-300">{chat.pdfName}</span>
             <button
-              onClick={() => {
-                handleRemovePdf(pdf.id);
-              }}
+              onClick={() => deletePdfAndChat(chat.id)}
               className="p-2 text-red-500 hover:text-red-300 rounded"
             >
               <FiTrash2 />
@@ -113,12 +77,7 @@ export default function DocumentUpload() {
             <Button
               variant="filled"
               className="flex items-center gap-2 p-2 rounded"
-              onClick={() => {
-                const chatId = Object.values(chats).find(
-                  (chat) => chat.pdfId === pdf.id,
-                )?.id;
-                if (chatId) onClickRedirect(chatId);
-              }}
+              onClick={() => onClickRedirect(chat.id.toString())} // Adjusted to pass chatId as string
             >
               <FiMessageCircle />
               <span>Chat with PDF</span>
